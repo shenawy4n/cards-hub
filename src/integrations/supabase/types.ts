@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          admin_user_id: string | null
+          created_at: string
+          id: string
+          metadata: Json
+          target_id: string | null
+          target_type: string
+        }
+        Insert: {
+          action: string
+          admin_user_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json
+          target_id?: string | null
+          target_type: string
+        }
+        Update: {
+          action?: string
+          admin_user_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json
+          target_id?: string | null
+          target_type?: string
+        }
+        Relationships: []
+      }
       cards: {
         Row: {
           activated_at: string | null
@@ -230,8 +260,90 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _event_stats: {
+        Args: { p_card: string; p_profile: string }
+        Returns: Json
+      }
+      _is_incomplete: {
+        Args: { p: Database["public"]["Tables"]["profiles"]["Row"] }
+        Returns: boolean
+      }
+      _recent_events: {
+        Args: { p_card: string; p_limit: number; p_profile: string }
+        Returns: Json
+      }
+      _require_admin: { Args: { _perm: string }; Returns: undefined }
+      admin_activity: {
+        Args: {
+          p_from?: string
+          p_limit?: number
+          p_offset?: number
+          p_to?: string
+          p_type?: string
+          p_user_id?: string
+        }
+        Returns: Json
+      }
+      admin_analytics_summary: {
+        Args: {
+          p_event_type?: string
+          p_from: string
+          p_source?: string
+          p_to: string
+        }
+        Returns: Json
+      }
+      admin_audit_logs: {
+        Args: { p_action?: string; p_limit?: number; p_offset?: number }
+        Returns: Json
+      }
+      admin_card_details: { Args: { p_card_id: string }; Returns: Json }
+      admin_list_admins: { Args: never; Returns: Json }
+      admin_list_cards: {
+        Args: {
+          p_from?: string
+          p_limit?: number
+          p_offset?: number
+          p_search?: string
+          p_sort?: string
+          p_status?: string
+          p_to?: string
+        }
+        Returns: Json
+      }
+      admin_list_profiles: {
+        Args: {
+          p_completeness?: string
+          p_limit?: number
+          p_offset?: number
+          p_search?: string
+          p_sort?: string
+          p_visibility?: string
+        }
+        Returns: Json
+      }
+      admin_overview: { Args: { p_days?: number }; Returns: Json }
+      admin_search: { Args: { p_q: string }; Returns: Json }
+      admin_set_card_status: {
+        Args: { p_card_ids: string[]; p_status: string }
+        Returns: number
+      }
       admin_stats: { Args: never; Returns: Json }
+      admin_timeseries: {
+        Args: {
+          p_card_id?: string
+          p_from: string
+          p_profile_id?: string
+          p_to: string
+        }
+        Returns: Json
+      }
+      admin_user_details: { Args: { p_user_id: string }; Returns: Json }
       get_public_profile: { Args: { p_slug: string }; Returns: Json }
+      has_admin_permission: {
+        Args: { _perm: string; _uid: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

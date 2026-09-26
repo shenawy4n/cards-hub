@@ -62,7 +62,7 @@ function ProfileEditor() {
   }
 
   async function add() {
-    if (!/^https?:\/\//.test(newLink.url)) return toast.error("Link must start with http:// or https://");
+    if (!/^https?:\/\//.test(newLink.url)) { toast.error("Link must start with http:// or https://"); return; }
     await addLink(p.id, { ...newLink, sort_order: links.data?.length ?? 0 });
     setNewLink({ ...newLink, url: "" });
     qc.invalidateQueries({ queryKey: ["my-links"] });

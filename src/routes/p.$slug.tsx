@@ -8,7 +8,7 @@ import { logEvent } from "@/services/analyticsService";
 import { downloadVCard } from "@/utils/vcard";
 
 export const Route = createFileRoute("/p/$slug")({
-  validateSearch: (s: Record<string, unknown>) => ({ src: s.src === "nfc" ? "nfc" : s.src === "qr" ? "qr" : undefined }) as { src?: "qr" | "nfc" },
+  validateSearch: (s: Record<string, unknown>): { src?: "qr" | "nfc" | "direct" } => (s["src"] === "nfc" ? { src: "nfc" } : s["src"] === "qr" ? { src: "qr" } : s["src"] === "direct" ? { src: "direct" } : {}),
   loader: async ({ params }) => {
     const profile = await getPublicProfile(params.slug);
     if (!profile) throw notFound();

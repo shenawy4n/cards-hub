@@ -6,7 +6,7 @@ import { logEvent } from "@/services/analyticsService";
 
 export const Route = createFileRoute("/r/$cardCode")({
   ssr: false,
-  validateSearch: (s: Record<string, unknown>) => ({ src: s.src === "nfc" ? "nfc" : s.src === "qr" ? "qr" : "direct" }) as { src: "qr" | "nfc" | "direct" },
+  validateSearch: (s: Record<string, unknown>): { src: "qr" | "nfc" | "direct" } => ({ src: s["src"] === "nfc" ? "nfc" : s["src"] === "qr" ? "qr" : "direct" }),
   head: () => ({
     meta: [
       { title: "Opening profile — 4N HUB" },

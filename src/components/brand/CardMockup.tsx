@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
 
 interface CardMockupProps {
-  cardCode?: string;
-  qrSrc?: string;
+  cardCode?: string | undefined;
+  qrSrc?: string | undefined;
   className?: string;
 }
 

@@ -64,12 +64,12 @@ function Admin() {
       <div className="mx-auto max-w-6xl space-y-8 px-5 py-8">
         <PageTitle title="Admin" subtitle="Users, cards and platform activity." />
         <div className="grid grid-cols-2 gap-3 md:grid-cols-6">
-          <Stat label="Users" value={s?.total_users ?? "–"} />
-          <Stat label="Cards" value={s?.total_cards ?? "–"} />
-          <Stat label="Active" value={s?.active_cards ?? "–"} />
-          <Stat label="Pending" value={s?.pending_cards ?? "–"} />
-          <Stat label="Disabled" value={s?.disabled_cards ?? "–"} />
-          <Stat label="Views" value={s?.total_views ?? "–"} />
+          <Stat label="Users" value={s?.["total_users"] ?? "–"} />
+          <Stat label="Cards" value={s?.["total_cards"] ?? "–"} />
+          <Stat label="Active" value={s?.["active_cards"] ?? "–"} />
+          <Stat label="Pending" value={s?.["pending_cards"] ?? "–"} />
+          <Stat label="Disabled" value={s?.["disabled_cards"] ?? "–"} />
+          <Stat label="Views" value={s?.["total_views"] ?? "–"} />
         </div>
         <div className="overflow-x-auto rounded-xl border border-border">
           <table className="w-full text-sm">

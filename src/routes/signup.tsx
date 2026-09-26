@@ -27,13 +27,13 @@ function SignupPage() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (password.length < 8) return toast.error("Password must be at least 8 characters.");
+    if (password.length < 8) { toast.error("Password must be at least 8 characters."); return; }
     setBusy(true);
     const { data, error } = await supabase.auth.signUp({
       email, password, options: { emailRedirectTo: `${window.location.origin}/dashboard` },
     });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     if (data.session) window.location.assign("/dashboard");
     else setSent(true);
   }

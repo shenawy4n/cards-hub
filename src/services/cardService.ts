@@ -13,7 +13,7 @@ export async function getMyCards(userId: string): Promise<Card[]> {
 }
 
 export async function setCardStatus(cardId: string, status: CardStatus): Promise<void> {
-  const patch: Record<string, unknown> = { status };
+  const patch: { status: CardStatus; activated_at?: string } = { status };
   if (status === "active") patch.activated_at = new Date().toISOString();
   const { error } = await supabase.from("cards").update(patch).eq("id", cardId);
   if (error) throw error;
@@ -30,5 +30,5 @@ export async function syncEncodedUrl(card: Card): Promise<void> {
 export async function resolveCard(cardCode: string): Promise<CardResolution> {
   const { data, error } = await supabase.rpc("resolve_card", { p_card_code: cardCode });
   if (error) throw error;
-  return (data as CardResolution) ?? { found: false };
+  return (data as unknown as CardResolution) ?? { found: false };
 }

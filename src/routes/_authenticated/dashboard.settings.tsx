@@ -19,9 +19,9 @@ function Settings() {
 
   async function change(e: React.FormEvent) {
     e.preventDefault();
-    if (pw.length < 8) return toast.error("Password must be at least 8 characters.");
+    if (pw.length < 8) { toast.error("Password must be at least 8 characters."); return; }
     const { error } = await supabase.auth.updateUser({ password: pw, current_password: current } as never);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setCurrent(""); setPw("");
     toast.success("Password updated");
   }

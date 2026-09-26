@@ -87,5 +87,5 @@ export async function deleteLink(id: string): Promise<void> {
 export async function getPublicProfile(slug: string): Promise<PublicProfile | null> {
   const { data, error } = await supabase.rpc("get_public_profile", { p_slug: slug });
   if (error) throw error;
-  return (data as PublicProfile | null) ?? null;
+  return (data as unknown as PublicProfile | null) ?? null;
 }

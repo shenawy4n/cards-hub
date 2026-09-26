@@ -10,9 +10,9 @@ export async function logEvent(input: {
   const { error } = await supabase.rpc("log_event", {
     p_event_type: input.eventType,
     p_source: input.source ?? "unknown",
-    p_slug: input.slug ?? undefined,
-    p_card_code: input.cardCode ?? undefined,
-    p_user_agent: typeof navigator !== "undefined" ? navigator.userAgent : undefined,
+    ...(input.slug ? { p_slug: input.slug } : {}),
+    ...(input.cardCode ? { p_card_code: input.cardCode } : {}),
+    ...(typeof navigator !== "undefined" ? { p_user_agent: navigator.userAgent } : {}),
   });
   if (error) console.error("log_event failed", error.message);
 }

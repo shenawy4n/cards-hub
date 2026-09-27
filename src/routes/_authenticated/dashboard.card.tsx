@@ -33,8 +33,12 @@ function MyCard() {
   const nfcUrl = cardRedirectUrl(card.card_code, "nfc");
 
   async function toggle() {
-    await setCardStatus(card!.id, card!.status === "active" ? "disabled" : "active");
-    qc.invalidateQueries({ queryKey: ["my-cards"] });
+    try {
+      await setMyCardStatus(card!.id, card!.status === "active" ? "disabled" : "active");
+      qc.invalidateQueries({ queryKey: ["my-cards"] });
+    } catch (e) {
+      toast.error((e as Error).message);
+    }
   }
   const copy = (v: string) => { navigator.clipboard.writeText(v); toast.success("Copied"); };
 

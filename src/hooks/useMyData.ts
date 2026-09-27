@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import { ensureProfile, getLinks } from "@/services/profileService";
-import { getMyCards, syncEncodedUrl } from "@/services/cardService";
+import { getMyCards } from "@/services/cardService";
 import { getProfileEvents, summarize } from "@/services/analyticsService";
 
 export function useUser() {
@@ -29,11 +29,7 @@ export function useMyCards(enabled: boolean) {
   return useQuery({
     queryKey: ["my-cards", user.id],
     enabled,
-    queryFn: async () => {
-      const cards = await getMyCards(user.id);
-      await Promise.all(cards.map(syncEncodedUrl));
-      return cards;
-    },
+    queryFn: () => getMyCards(user.id),
   });
 }
 

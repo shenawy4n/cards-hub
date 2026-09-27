@@ -45,7 +45,7 @@ export function AdminPageHeader({ title, subtitle, actions }: { title: string; s
   );
 }
 
-export function AdminKpiCard({ label, value, cur, prev, hint }: { label: string; value?: number | string; cur?: number; prev?: number; hint?: string }) {
+export function AdminKpiCard({ label, value, cur, prev, hint }: { label: string; value?: number | string | undefined; cur?: number | undefined; prev?: number | undefined; hint?: string | undefined }) {
   let delta: ReactNode = null;
   if (cur !== undefined && prev !== undefined) {
     const d = prev === 0 ? (cur > 0 ? 100 : 0) : Math.round(((cur - prev) / prev) * 100);
@@ -75,7 +75,7 @@ export function EmptyState({ title = "Nothing here yet", text }: { title?: strin
   );
 }
 
-export function ErrorState({ error, onRetry }: { error?: unknown; onRetry?: () => void }) {
+export function ErrorState({ error, onRetry }: { error?: unknown; onRetry?: (() => void) | undefined }) {
   return (
     <div className="flex flex-col items-center gap-3 rounded-xl border border-destructive/30 py-10 text-center">
       <AlertTriangle className="h-6 w-6 text-destructive" />
@@ -98,8 +98,8 @@ export interface Column<T> { header: string; cell: (row: T) => ReactNode; classN
 
 /** Table on desktop, stacked cards on mobile. Handles loading/error/empty. */
 export function AdminDataTable<T>({ columns, rows, rowKey, onRowClick, loading, error, onRetry, empty }: {
-  columns: Column<T>[]; rows?: T[]; rowKey: (r: T) => string; onRowClick?: (r: T) => void;
-  loading?: boolean; error?: unknown; onRetry?: () => void; empty?: string;
+  columns: Column<T>[]; rows?: T[] | undefined; rowKey: (r: T) => string; onRowClick?: ((r: T) => unknown) | undefined;
+  loading?: boolean; error?: unknown; onRetry?: (() => unknown) | undefined; empty?: string | undefined;
 }) {
   if (loading) return <LoadingState />;
   if (error) return <ErrorState error={error} onRetry={onRetry} />;

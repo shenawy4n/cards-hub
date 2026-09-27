@@ -1,5 +1,4 @@
 import { supabase } from "@/integrations/supabase/client";
-import { cardRedirectUrl } from "@/lib/site";
 import type { Card, CardResolution, CardStatus } from "@/types";
 
 export async function getMyCards(userId: string): Promise<Card[]> {
@@ -12,18 +11,17 @@ export async function getMyCards(userId: string): Promise<Card[]> {
   return (data ?? []) as Card[];
 }
 
-export async function setCardStatus(cardId: string, status: CardStatus): Promise<void> {
-  const patch: { status: CardStatus; activated_at?: string } = { status };
-  if (status === "active") patch.activated_at = new Date().toISOString();
-  const { error } = await supabase.from("cards").update(patch).eq("id", cardId);
+/** Owner toggle for an already-activated card (pending cards need an admin). */
+export async function setMyCardStatus(cardId: string, status: Exclude<CardStatus, "pending">): Promise<void> {
+  const { error } = await supabase.rpc("user_set_card_status" as never, { p_card_id: cardId, p_status: status } as never);
   if (error) throw error;
 }
 
-/** Keeps the stored encoded URL in sync with the canonical QR target. */
-export async function syncEncodedUrl(card: Card): Promise<void> {
-  const url = cardRedirectUrl(card.card_code, "qr");
-  if (card.encoded_url === url) return;
-  await supabase.from("cards").update({ encoded_url: url }).eq("id", card.id);
+/** Audited admin status change. */
+export async function adminSetCardStatus(cardIds: string[], status: Exclude<CardStatus, "pending">): Promise<number> {
+  const { data, error } = await supabase.rpc("admin_set_card_status", { p_card_ids: cardIds, p_status: status });
+  if (error) throw error;
+  return (data as number) ?? 0;
 }
 
 /** Public lookup used by the /r/:cardId redirect. Never exposes internal ids. */

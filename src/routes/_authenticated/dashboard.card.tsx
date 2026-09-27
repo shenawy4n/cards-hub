@@ -11,7 +11,7 @@ import { Loading, PageTitle } from "@/components/dashboard/Stat";
 import { useMyCards, useMyProfile } from "@/hooks/useMyData";
 import { cardRedirectUrl } from "@/lib/site";
 import { downloadQrPng, downloadQrSvg, qrDataUrl } from "@/services/qrService";
-import { setCardStatus } from "@/services/cardService";
+import { setMyCardStatus } from "@/services/cardService";
 
 export const Route = createFileRoute("/_authenticated/dashboard/card")({
   component: MyCard,
@@ -33,8 +33,12 @@ function MyCard() {
   const nfcUrl = cardRedirectUrl(card.card_code, "nfc");
 
   async function toggle() {
-    await setCardStatus(card!.id, card!.status === "active" ? "disabled" : "active");
-    qc.invalidateQueries({ queryKey: ["my-cards"] });
+    try {
+      await setMyCardStatus(card!.id, card!.status === "active" ? "disabled" : "active");
+      qc.invalidateQueries({ queryKey: ["my-cards"] });
+    } catch (e) {
+      toast.error((e as Error).message);
+    }
   }
   const copy = (v: string) => { navigator.clipboard.writeText(v); toast.success("Copied"); };
 
@@ -46,9 +50,9 @@ function MyCard() {
           <CardMockup cardCode={card.card_code} qrSrc={qr} />
           <div className="flex items-center gap-3">
             <Badge variant={card.status === "active" ? "default" : "secondary"}>{card.status}</Badge>
-            <Button size="sm" variant="outline" onClick={toggle}>{card.status === "active" ? "Disable card" : "Activate card"}</Button>
+            {card.status !== "pending" && <Button size="sm" variant="outline" onClick={toggle}>{card.status === "active" ? "Disable card" : "Re-enable card"}</Button>}
           </div>
-          <p className="text-xs text-muted-foreground">When disabled, taps and scans won't open your profile.</p>
+          <p className="text-xs text-muted-foreground">{card.status === "pending" ? "Your card is awaiting activation by 4N HUB." : "When disabled, taps and scans won't open your profile."}</p>
         </div>
         <div className="space-y-6">
           <div className="rounded-xl border border-border p-5">

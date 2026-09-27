@@ -362,6 +362,10 @@ export type Database = {
         Returns: undefined
       }
       resolve_card: { Args: { p_card_code: string }; Returns: Json }
+      user_set_card_status: {
+        Args: { p_card_id: string; p_status: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "user"
